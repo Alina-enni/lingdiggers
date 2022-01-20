@@ -3,5 +3,6 @@
 def main():
 
     print("Hello world!")
+    print("Goodbye cruel world")
 
 main()
