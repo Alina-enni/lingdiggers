@@ -10,11 +10,14 @@ def main():
     html = request.urlopen(url).read().decode('utf8')
     html[:60]
 
-    raw = BeautifulSoup(html, 'html.parser').get_text()
-    tokens = word_tokenize(raw)
-    tokens = tokens[0:126]
+    raw = BeautifulSoup(html, 'html.parser')
+    h1 = raw.find('h1')  # looking for headings in a page
+    p = raw.find_all('div', {'class': 'ssrcss-r2nzwz-RichTextContainer e5tfeyi1'})  # looking for all paragraphs with this ID in a page
 
-    print()
-    print(tokens)
+    # printing and tokenizing
+    print("Title:\n", word_tokenize(h1.text))  # print(h1.string) seems to give the same result
+    print("Article text:")
+    for line in p:
+        print(word_tokenize(line.text))
 
 main()
