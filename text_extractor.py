@@ -1,23 +1,28 @@
-""" This program reads a web page and ignores the HTML markup. It tokenizes the text on the web page and prints the tokens. """
+""" This program reads a web page and ignores the HTML markup. It prints the text on the web page as plain text. """
 
-from nltk import word_tokenize
+import nltk
 from bs4 import BeautifulSoup
 from urllib import request
+from datetime import datetime
 
 def main():
 
-    url = "https://www.bbc.com/news/av/uk-60083200"
+    url = "https://www.bbc.com/news/entertainment_and_arts"
     html = request.urlopen(url).read().decode('utf8')
     html[:60]
 
     raw = BeautifulSoup(html, 'html.parser')
-    h1 = raw.find('h1')  # looking for headings in a page
-    p = raw.find_all('div', {'class': 'ssrcss-r2nzwz-RichTextContainer e5tfeyi1'})  # looking for all paragraphs with this ID in a page
+    h3 = raw.find('h3').get_text()  # looking for the first h3 heading in a page, then stripping the HTML code
+    p = raw.find(attrs={'gs-c-promo-summary gel-long-primer gs-u-mt nw-c-promo-summary'}).get_text()  # looking for the first instance of this ID in a page, then stripping the HTML code
 
-    # printing and tokenizing
-    print("Title:\n", word_tokenize(h1.text))  # print(h1.string) seems to give the same result
-    print("Article text:")
-    for line in p:
-        print(word_tokenize(line.text))
+    # adding a timestamp just for fun & to track content changes over time
+    dateTimeObj = datetime.now()
+    timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M)")
+
+    # printing contents in plain text
+    print("The top BBC News Entertainment & Arts story as of", timestampStr)
+    print("")
+    print("Title:", h3)
+    print("Summary:", p)
 
 main()
