@@ -1,6 +1,5 @@
 """ This program reads a web page and ignores the HTML markup. It prints the text on the web page as plain text. """
 
-import nltk
 from bs4 import BeautifulSoup
 from urllib import request
 from datetime import datetime
