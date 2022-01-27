@@ -9,7 +9,6 @@ cv = CountVectorizer(lowercase=True, binary=True)
 sparse_matrix = cv.fit_transform(documents)
 
 sparse_td_matrix = sparse_matrix.T.tocsr()
-print(sparse_td_matrix)
 
 t2i = cv.vocabulary_  # shorter notation: t2i = term-to-index
 
@@ -34,6 +33,7 @@ def test_query(query):
     print("Matching:", eval(rewrite_query(query))) # Eval runs the string as a Python command
     print()
 
-queryinput = input("Type your query: ")
+queryinput = 0
 while queryinput != '':
+    queryinput = input("Type your query: ")
     test_query(queryinput)
