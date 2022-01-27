@@ -5,7 +5,7 @@ documents = ["This is a silly example",
             "Nothing to see here",
             "This is a great and long example"]
 
-cv = CountVectorizer(lowercase=True, binary=True)
+cv = CountVectorizer(lowercase=True, binary=True, analyzer="word", token_pattern=r"(?u)\b\w+\b")
 sparse_matrix = cv.fit_transform(documents)
 sparse_td_matrix = sparse_matrix.T.tocsr()
 t2i = cv.vocabulary_  # shorter notation: t2i = term-to-index
