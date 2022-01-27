@@ -81,9 +81,3 @@ while queryinput != []:
 if queryinput == []:
     print()
     print("Goodbye!")
-
-# If you just copy the code from the tutorial, your program will crash if you enter a word (term) that does not 
-# occur in any document in the collection. Modify your program to work correctly also in the case that a term is 
-# unknown. For instance, what documents should be retrieved for a search such as: (1) "unknownweirdword", 
-# (2) "NOT unknownweirdword", or (3) "unknownweirdword OR this"? (If this is too difficult, don't get stuck 
-# here, but come back to it later.)
