@@ -34,7 +34,7 @@ def test_query(query):
     print("Matching:", eval(rewrite_query(query))) # Eval runs the string as a Python command
     print()
 
-test_query("example AND NOT nothing")
-test_query("NOT example OR great")
-test_query("( not example or great ) and nothing") # ... or all small letters
-test_query("not example and not nothing")
+queryinput = 0
+while queryinput != '':
+    queryinput = input("Type your query: ")
+    test_query(queryinput)
