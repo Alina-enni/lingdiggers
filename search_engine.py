@@ -34,7 +34,6 @@ def test_query(query):
     print("Matching:", eval(rewrite_query(query))) # Eval runs the string as a Python command
     print()
 
-queryinput = 0
+queryinput = input("Type your query: ")
 while queryinput != '':
-    queryinput = input("Type your query: ")
     test_query(queryinput)
