@@ -43,12 +43,9 @@ def print_contents(query):
 queryinput = '0'
 while queryinput != '':
     queryinput = input("Type your query: ")
-    if queryinput in t2i.keys():
-        print(t2i)
-        test_query(queryinput)
-        print_contents(queryinput)
-    else:
-        print("No results")
+    print(t2i)
+    test_query(queryinput)
+    print_contents(queryinput)
 
 # Loop through dictionary and if word is not in the dictionary, do something
 
