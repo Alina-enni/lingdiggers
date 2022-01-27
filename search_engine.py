@@ -13,7 +13,6 @@ t2i = cv.vocabulary_  # shorter notation: t2i = term-to-index
 # Operators and/AND, or/OR, not/NOT become &, |, 1 -
 # Parentheses are left untouched
 # Everything else interpreted as a term and fed through td_matrix[t2i["..."]]
-
 d = {"and": "&", "AND": "&",
     "or": "|", "OR": "|",
     "not": "1 -", "NOT": "1 -",
@@ -32,23 +31,59 @@ def test_query(query):
     print()
 
 def print_contents(query):
-    hits_matrix = eval(rewrite_query(query))
-    print("Matching documents as vector (it is actually a matrix with one single row):", hits_matrix)
-    print("The coordinates of the non-zero elements:", hits_matrix.nonzero())
-    hits_list = list(hits_matrix.nonzero()[1])
-    print(hits_list)
-    for i, doc_idx in enumerate(hits_list):
-        print("Matching doc #{:d}: {:s}".format(i, documents[doc_idx]))
+    if query != "UKN":
+        hits_matrix = eval(rewrite_query(query))
+        print("Matching documents as vector (it is actually a matrix with one single row):", hits_matrix)
+        print("The coordinates of the non-zero elements:", hits_matrix.nonzero())
+        hits_list = list(hits_matrix.nonzero()[1])
+        print(hits_list)
+        for i, doc_idx in enumerate(hits_list):
+            print("Matching doc #{:d}: {:s}".format(i, documents[doc_idx]))
+    elif query == "UKN":
+        print("Sorry, that document does not exist in the collection.")
 
-queryinput = '0'
-while queryinput != '':
-    queryinput = input("Type your query: ")
-    if queryinput in t2i.keys():
-        print(t2i)
-        test_query(queryinput)
-        print_contents(queryinput)
-    else:
-        print("No results")
+queryinput = "0"
+while queryinput != []:
+    queryinput = input("Type your query: ").split()    # Split query in case it contains multiple terms
 
-if queryinput == '':
+    if len(queryinput) == 1:    # If query consists of only one term, operate on that
+        queryinput = ' '.join(map(str, queryinput))
+        if queryinput in t2i.keys():
+            test_query(queryinput)
+            print_contents(queryinput)
+            print()
+
+        elif queryinput not in t2i.keys() and queryinput != "":
+            queryinput = "UKN"
+            t2i[queryinput] = 0
+            test_query(queryinput)
+            print_contents(queryinput)
+            print()
+
+    elif len(queryinput) > 1:       # If query consists of multiple terms, e.g. "NOT example"
+        i = 0
+        multiquery = []
+        while i < len(queryinput): 
+            if queryinput[i] in d.keys():           # Check if term found in operators
+                multiquery.append(queryinput[i])
+            elif queryinput[i] in t2i.keys():       # Check if term found in the documents
+                multiquery.append(queryinput[i])
+            elif queryinput[i] not in t2i.keys():   # If there's an unknown term
+                t2i["UKN"] = 0
+                multiquery.append("UKN")
+            i += 1
+
+        multiquery = ' '.join(map(str, multiquery))
+        print(t2i.keys())
+        test_query(multiquery)
+        print_contents(multiquery)
+
+if queryinput == []:
+    print()
     print("Goodbye!")
+
+# If you just copy the code from the tutorial, your program will crash if you enter a word (term) that does not 
+# occur in any document in the collection. Modify your program to work correctly also in the case that a term is 
+# unknown. For instance, what documents should be retrieved for a search such as: (1) "unknownweirdword", 
+# (2) "NOT unknownweirdword", or (3) "unknownweirdword OR this"? (If this is too difficult, don't get stuck 
+# here, but come back to it later.)
