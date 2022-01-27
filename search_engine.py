@@ -50,7 +50,5 @@ while queryinput != '':
     else:
         print("No results")
 
-# Loop through dictionary and if word is not in the dictionary, do something
-
 if queryinput == '':
     print("Goodbye!")
