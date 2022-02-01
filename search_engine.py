@@ -1,5 +1,6 @@
 from sklearn.feature_extraction.text import CountVectorizer
 import re
+import textwrap
 
 f = open("100articles.txt", encoding="utf-8")
 op = f.read()
@@ -40,8 +41,7 @@ def print_contents(query):
         hits_list = list(hits_matrix.nonzero()[1])
         print(hits_list)
         for i, doc_idx in enumerate(hits_list):
-            print("Matching doc #{:d}: {:s}".format(i, documents[doc_idx]))
-
+            print("Matching doc #{:d}: {:s}".format(i, textwrap.shorten(documents[doc_idx], width=100)))
     elif query == "UKN":
         print("Sorry, that document does not exist in the collection.")
 
