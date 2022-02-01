@@ -1,9 +1,11 @@
 from sklearn.feature_extraction.text import CountVectorizer
+import re
 
-documents = ["This is a silly example",
-            "A better example",
-            "Nothing to see here",
-            "This is a great and long example"]
+f = open("100articles.txt", encoding="utf-8")
+op = f.read()
+f.close()
+op = re.sub (r'\n', r'', op)
+documents = op.split(r'</article>')
 
 cv = CountVectorizer(lowercase=True, binary=True, analyzer="word", token_pattern=r"(?u)\b\w+\b")
 sparse_matrix = cv.fit_transform(documents)
@@ -39,6 +41,7 @@ def print_contents(query):
         print(hits_list)
         for i, doc_idx in enumerate(hits_list):
             print("Matching doc #{:d}: {:s}".format(i, documents[doc_idx]))
+
     elif query == "UKN":
         print("Sorry, that document does not exist in the collection.")
 
