@@ -5,8 +5,10 @@ import textwrap
 f = open("100articles.txt", encoding="utf-8")
 op = f.read()
 f.close()
-op = re.sub (r'\n', r'', op)
+op = re.sub(r'\n', r'', op)
 documents = op.split(r'</article>')
+remove_html = re.compile(r"<.*?>")
+documents = [remove_html.sub(' ', a).strip() for a in documents]
 
 cv = CountVectorizer(lowercase=True, binary=True, analyzer="word", token_pattern=r"(?u)\b\w+\b")
 sparse_matrix = cv.fit_transform(documents)
@@ -36,30 +38,35 @@ def test_query(query):
 def print_contents(query):
     if query != "UKN":
         hits_matrix = eval(rewrite_query(query))
-        print("Matching documents as vector (it is actually a matrix with one single row):", hits_matrix)
-        print("The coordinates of the non-zero elements:", hits_matrix.nonzero())
+        #print("Matching documents as vector (it is actually a matrix with one single row):", hits_matrix)
+        #print("The coordinates of the non-zero elements:", hits_matrix.nonzero())
         hits_list = list(hits_matrix.nonzero()[1])
-        print(hits_list)
-        for i, doc_idx in enumerate(hits_list):
+        #print(hits_list)
+        if len(hits_list) == 1:
+            print(len(hits_list) ,"document found")
+        else:
+            print(len(hits_list) ,"documents found")
+        print('')
+        for i, doc_idx in enumerate(hits_list, start=1):
             print("Matching doc #{:d}: {:s}".format(i, textwrap.shorten(documents[doc_idx], width=100)))
     elif query == "UKN":
         print("Sorry, that document does not exist in the collection.")
 
 queryinput = "0"
 while queryinput != []:
-    queryinput = input("Type your query: ").split()    # Split query in case it contains multiple terms
-
+    queryinput = input("Type your query: ").casefold()
+    queryinput = queryinput.split()    # Split query in case it contains multiple terms
     if len(queryinput) == 1:    # If query consists of only one term, operate on that
         queryinput = ' '.join(map(str, queryinput))
         if queryinput in t2i.keys():
-            test_query(queryinput)
+            #test_query(queryinput)
             print_contents(queryinput)
             print()
 
         elif queryinput not in t2i.keys() and queryinput != "":
             queryinput = "UKN"
             t2i[queryinput] = 0
-            test_query(queryinput)
+            #test_query(queryinput)
             print_contents(queryinput)
             print()
 
@@ -78,7 +85,7 @@ while queryinput != []:
 
         multiquery = ' '.join(map(str, multiquery))
         print(t2i.keys())
-        test_query(multiquery)
+        #test_query(multiquery)
         print_contents(multiquery)
 
 if queryinput == []:
