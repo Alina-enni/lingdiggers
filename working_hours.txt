@@ -1,0 +1,6 @@
+Working hours
+
+Date
+Number of hours
+Name of team member
+Brief note on what you worked on
