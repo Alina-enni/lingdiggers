@@ -4,3 +4,8 @@ Date
 Number of hours
 Name of team member
 Brief note on what you worked on
+
+3.2.2022
+2 hours
+Alina
+Started working on the relevance ranking search engine. Built the basic structure of the ranked search and then combined the Boolean search with this new method.
