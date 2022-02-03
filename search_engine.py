@@ -85,8 +85,6 @@ while queryinput != []:
             i += 1
 
         multiquery = ' '.join(map(str, multiquery))
-        print(t2i.keys())
-        #test_query(multiquery)
         print_contents(multiquery)
 
 if queryinput == []:
