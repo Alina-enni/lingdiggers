@@ -2,6 +2,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 import re
 import textwrap
 
+# for Alina: /Users/alina/Documents/GitHub/lingdiggers/
 f = open("100articles.txt", encoding="utf-8")
 op = f.read()
 f.close()
