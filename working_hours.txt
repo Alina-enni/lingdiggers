@@ -9,13 +9,3 @@ Brief note on what you worked on
 2 hours
 Alina
 Started working on the relevance ranking search engine. Built the basic structure of the ranked search and then combined the Boolean search with this new method.
-
-6.2.2022
-2 hours
-Migle
-Made slight changes to the structure of search engines. Started looking into stemming and wildcard searches.
-
-7.2.2022
-3 hours
-Migle
-Worked on wildcard search for the tf-idf search engine.
