@@ -19,3 +19,8 @@ Made slight changes to the structure of search engines. Started looking into ste
 3 hours
 Migle
 Worked on wildcard search for the tf-idf search engine.
+
+9.-10.2.2022
+4 hours
+Salla
+Added multiword support for the tf-idf search engine and assorted error recovery fixes/cosmetic improvements.
