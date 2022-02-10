@@ -111,43 +111,65 @@ def boolean_search():
 
 def tf_idf_search(t2i):
     query = input("Type your query: ")
-    if query != "":
-        searchlist = []
-        for word in t2i.keys():  # looping through all possible words in doc
-            if re.search('^{}.+'.format(query), word, re.IGNORECASE):  # if it finds words that start with the query...
-                searchlist.append(word)  # ...it appends them to our new list
-        queryinput = " "
-        queryinput = queryinput.join(searchlist)  # joined members of list into a string
-        print("\nThe following words found:", queryinput)
+    query = query.split()  # Split query in case it contains multiple terms
+    if len(query) == 1:  # If query consists of only one term, operate on that
+        query = ' '.join(map(str, query))
+        if query != "":
+            searchlist = []
+            for word in t2i.keys():  # looping through all possible words in doc
+                if re.search('^{}.+'.format(query), word, re.IGNORECASE):  # if it finds words that start with the query...
+                    searchlist.append(word)  # ...it appends them to our new list
+            if searchlist != []:
+                queryinput = ", "
+                queryinput = queryinput.join(searchlist)  # joined members of list into a string
+                print("\nThe following words were found:", queryinput)
 
-        query_vec5 = tfv5.transform([queryinput]).tocsc()  # CSC: compressed sparse column format
-        hits = np.dot(query_vec5, sparse_matrix)
+                query_vec5 = tfv5.transform([queryinput]).tocsc()  # CSC: compressed sparse column format
+                hits = np.dot(query_vec5, sparse_matrix)
 
-        print("\nTotal docs:", len(hits.nonzero()[1]))
-        print("\nThe matching documents are:", hits.nonzero()[1])
-        print("\nThe scores of the documents are:", np.array(hits[hits.nonzero()])[0], "\n")
+                print("\nTotal docs:", len(hits.nonzero()[1]))
+                print("\nThe matching documents are:", hits.nonzero()[1])
+                print("\nThe scores of the documents are:", np.array(hits[hits.nonzero()])[0], "\n")
 
-        ranked_scores_and_doc_ids = sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]), reverse=True)
-        for score, i in ranked_scores_and_doc_ids:
-            print("The score of", query,
-                "is {:.4f} in document: {:s}".format(score, textwrap.shorten(documents[i], width=100)))
+                ranked_scores_and_doc_ids = sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]), reverse=True)
+                for score, i in ranked_scores_and_doc_ids:
+                    print("The score of", query,
+                        "is {:.4f} in document #{:d}: {:s}".format(score, i, textwrap.shorten(documents[i], width=100)))
+            else:
+                print("Sorry, no matches found in the collection.")
+        else:
+            print("Sorry, that document does not exist in the collection.")
+    elif len(query) > 1:  # If query consists of multiple terms
+        query = ' '.join(map(str, query))
+        if query != "":
+            query_vec5 = tfv5.transform([ query ]).tocsc()  # CSC: compressed sparse column format
+            hits = np.dot(query_vec5, sparse_matrix)
+            ranked_scores_and_doc_ids = \
+                sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]), reverse=True)
+            for score, i in ranked_scores_and_doc_ids:
+                print("The score of", query,
+                    "is {:.4f} in document #{:d}: {:s}".format(score, i, textwrap.shorten(documents[i], width=100)))
+            print()
+        else:
+            print("Sorry, that document does not exist in the collection.")
 
-    else:
-        print("Sorry, that document does not exist in the collection.")
 
 def main():
     search_type = 0
     while search_type != 3:
-        search_type = int(input("\nType 1 for Boolean search, 2 for tf-idf based search or 3 to quit: "))
-
+        try:
+            search_type = int(input("\nType 1 for Boolean search, 2 for tf-idf based search or 3 to quit: "))
+        except ValueError:
+            print()
+            print("That is not a valid choice. Please try again!")
         if search_type == 2:
             tf_idf_search(t2i)
 
         elif search_type == 1:
             boolean_search()
 
-        elif search_type != 1 and search_type != 2 and search_type != 3:
-            print("\nThat is not a valid choice!")
+        elif search_type != 1 and search_type != 2 and search_type != 3 and search_type != 0:
+            print("\nThat is not a valid choice. Please try again!")
 
     if search_type == 3:
         print()
