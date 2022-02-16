@@ -117,7 +117,7 @@ def tf_idf_search(t2i):
         if query != "":
             searchlist = []
             for word in t2i.keys():  # looping through all possible words in doc
-                if re.search('^{}.+'.format(query), word, re.IGNORECASE):  # if it finds words that start with the query...
+                if re.search('^({}.+|{})'.format(query, query), word, re.IGNORECASE):  # if it finds words that start with the query...
                     searchlist.append(word)  # ...it appends them to our new list
             if searchlist != []:
                 queryinput = ", "
