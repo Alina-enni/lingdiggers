@@ -25,7 +25,12 @@ Worked on wildcard search for the tf-idf search engine.
 Salla
 Added multiword support for the tf-idf search engine and assorted error recovery fixes/cosmetic improvements.
 
-16.2.2022
+15.2.2022
 3 hours
 Alina 
 Pushed a lyric scraping script that would allow for an index containing song lyrics from various artists from Genius. Made sure the results are printed nicely in a txt file with the artist and song name at the top of each song.
+
+16.2.2022
+6 hours
+Alina
+Combined the song lyric index and our relevance ranked search infrastructure with the flask demo to create a web UI for the search. Added Bootstrap and CSS to make the formatting of the web UI nicer.
