@@ -1,0 +1,95 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Lyric search engine</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
+        <!-- Bootstrap core CSS -->
+        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+    body {
+        background-color: #c8e0de;
+        font-family: 'Arial';
+    }
+    .box {
+        margin: 0px auto;
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 0;
+        box-sizing: border-box;
+        padding: 5vh;
+        min-height: 90vh;
+    }
+    .footer {
+        background-color: #283030;
+        color: #b6bfbf;
+        text-align: center;
+        box-sizing: border-box;
+        height: 10vh;
+        padding: 3vh;
+        bottom: 0px;
+    }
+    .footer a {
+        color: #b6bfbf;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    table {
+        margin: 0px auto;
+        text-align: center;
+        }
+    td {
+        text-align: justify; 
+        padding: 2vh;
+    }
+    </style>
+    </head>
+    <body>
+        <article>
+        <div class="container-fluid">
+        <div class="row">
+        <div class="box col-md-8">
+
+        <h1>Song lyric search</h1>
+        <!--Reload the page with variable "query" in the URL-->
+        <form>
+            <input type="text" name="query" autofocus>
+            <input type="submit" value="Search">
+        </form>
+        <table>
+
+            <!--Go through each item in the "matches" variable sent from
+                search() function in the Flask app-->
+            
+            <tr>
+                <td>Total docs: {{ total_docs }}</td>
+                <td>The matching documents are: {{ matching_docs }}</td>
+            </tr>
+
+            {% for score, i in ranked_scores_and_doc_ids %}
+
+            <tr>
+                <!--Display the name of the item based on the "name" key-->
+                <td>{{ score }}</td>
+                <td>{{ documents[i] }}</td>
+
+            </tr>
+            <!--End for loop-->
+            {% endfor %}
+        </table>
+        </div></div></div>
+
+        <div class="row">
+        <div class="footer col-md-12">
+            This search engine was created by the <a href="https://github.com/Alina-enni/lingdiggers" target="_blank">lingdiggers</a>
+        </div>
+        </div>
+    
+    </article>
+    </body>
+
+</html>
+                               

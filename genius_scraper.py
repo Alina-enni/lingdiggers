@@ -11,7 +11,7 @@ GENIUS_API_TOKEN='OK93fmBOPEHDihuH2xD5IloNlps1sofo_FFX3viQGxSbvbBFOlM9nke5jc9D4r
 from lyricsgenius import Genius
 
 file = open("lyrics2.txt", "a")
-artists = ['Bob Dylan', 'Dua Lipa']
+artists = ['Coldplay']
 genius = Genius(GENIUS_API_TOKEN, skip_non_songs=False, remove_section_headers=True)
 
 def get_lyrics(arr, k):
