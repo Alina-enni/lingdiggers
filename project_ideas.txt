@@ -1,0 +1,5 @@
+- multiword search
+- wildcard search
+- KWIC (keyword in context) view
+- embedded YouTube links
+- theme extraction
