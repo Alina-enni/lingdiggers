@@ -21,7 +21,7 @@ def get_lyrics(arr, k):
             songs = (genius.search_artist(name, max_songs=k)).songs
             s = [song.lyrics for song in songs]
             for i in s:
-                file.write("Artist: " + name)
+                file.write(name)
                 file.write("\n")
                 file.write(i)
                 file.write("\n \n   <|endoftext|>   \n \n")

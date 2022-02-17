@@ -9,7 +9,7 @@ import textwrap
 app = Flask(__name__)
 
 # Filepath for Alina: /Users/alina/Documents/GitHub/flask-example/
-f = open("lyrics2.txt", encoding="utf-8")
+f = open("/Users/alina/Documents/GitHub/flask-example/lyrics2.txt", encoding="utf-8")
 op = f.read()
 f.close()
 documents = op.split(r'<|endoftext|>')
@@ -25,16 +25,15 @@ sparse_td_matrix2 = sparse_matrix2.T.tocsr()
 t2i = cv.vocabulary_  # Shorter notation: t2i = term-to-index
 
 def tf_idf_search(tfv5, t2i, query):
+
     query = query.split()  # Split query in case it contains multiple terms
     if len(query) == 1:  # If query consists of only one term, operate on that
-
         query = ' '.join(map(str, query))
         if query != "":
             searchlist = []
             for word in t2i.keys():  # looping through all possible words in doc
                 if re.search('^({}.+|{})'.format(query, query), word, re.IGNORECASE):  # if it finds words that start with the query...
                     searchlist.append(word)  # ...it appends them to our new list
-
             if searchlist != []:
                 queryinput = ", "
                 queryinput = queryinput.join(searchlist)  # joined members of list into a string
@@ -55,6 +54,23 @@ def tf_idf_search(tfv5, t2i, query):
                 return ranked_scores_and_doc_ids, hits, total_docs, matching_docs
             else:
                 print("Sorry, no matches found in the collection.")
+        else:
+            print("Sorry, that document does not exist in the collection.")
+    elif len(query) > 1:  # If query consists of multiple terms
+        query = ' '.join(map(str, query))
+        if query != "":
+            query_vec5 = tfv5.transform([ query ]).tocsc()  # CSC: compressed sparse column format
+            hits = np.dot(query_vec5, sparse_matrix)
+            ranked_scores_and_doc_ids = \
+                sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]), reverse=True)
+
+            total_docs = len(hits.nonzero()[1])
+            matching_docs = hits.nonzero()[1]
+
+            for score, i in ranked_scores_and_doc_ids:
+                print("The score of", query,
+                    "is {:.4f} in document #{:d}: {:s}".format(score, i, textwrap.shorten(documents[i], width=100)))
+            return ranked_scores_and_doc_ids, hits, total_docs, matching_docs
         else:
             print("Sorry, that document does not exist in the collection.")
 
