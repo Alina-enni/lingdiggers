@@ -68,6 +68,10 @@
                 <td>Total docs: {{ total_docs }}</td>
                 <td>The matching documents are: {{ matching_docs }}</td>
             </tr>
+            <tr>
+                <td>The following words were found:</td>
+                <td>{{ queryinput}}</td>
+            </tr>
 
             {% for score, i in ranked_scores_and_doc_ids %}
 
@@ -92,4 +96,5 @@
     </body>
 
 </html>
+            
                                

@@ -37,7 +37,6 @@ def tf_idf_search(tfv5, t2i, query):
             if searchlist != []:
                 queryinput = ", "
                 queryinput = queryinput.join(searchlist)  # joined members of list into a string
-                print("\nThe following words were found:", queryinput)
 
                 query_vec5 = tfv5.transform([queryinput]).tocsc()  # CSC: compressed sparse column format
                 hits = np.dot(query_vec5, sparse_matrix)
@@ -51,7 +50,7 @@ def tf_idf_search(tfv5, t2i, query):
                 for score, i in ranked_scores_and_doc_ids:
                     print("The score of", query,
                         "is {:.4f} in document #{:d}: {:s}".format(score, i, textwrap.shorten(documents[i], width=100)))
-                return ranked_scores_and_doc_ids, hits, total_docs, matching_docs
+                return ranked_scores_and_doc_ids, hits, total_docs, matching_docs, queryinput
             else:
                 print("Sorry, no matches found in the collection.")
         else:
@@ -84,6 +83,7 @@ def search():
     hits = []
     total_docs = []
     matching_docs = []
+    queryinput = []
 
         #If query exists (i.e. is not None)
     if query:
@@ -92,6 +92,7 @@ def search():
         hits = tf_idf_search(tfv5, t2i, query)[1]
         total_docs = tf_idf_search(tfv5, t2i, query)[2]
         matching_docs = tf_idf_search(tfv5, t2i, query)[3]
+        queryinput = tf_idf_search(tfv5, t2i, query)[4]
 
     #Render index.html with matches variable
-    return render_template('index.html', ranked_scores_and_doc_ids=ranked_scores_and_doc_ids, hits=hits, total_docs=total_docs, matching_docs=matching_docs, documents=documents)
+    return render_template('index.html', ranked_scores_and_doc_ids=ranked_scores_and_doc_ids, hits=hits, total_docs=total_docs, matching_docs=matching_docs, documents=documents, queryinput=queryinput)
