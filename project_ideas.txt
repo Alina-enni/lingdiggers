@@ -1,5 +1,5 @@
-- multiword search
-- wildcard search
-- KWIC (keyword in context) view
-- embedded YouTube links
-- theme extraction
+- multiword search			S	Alina
+- wildcard search				XS	Alina		
+- KWIC (keyword in context) view	L	Migle
+- embedded YouTube links		M	Salla
+- theme extraction			M	?
