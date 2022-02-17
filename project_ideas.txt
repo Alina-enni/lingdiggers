@@ -1,3 +1,4 @@
+- enrich data (add artists)		XS	All of us
 - multiword search			S	Alina
 - wildcard search				XS	Alina		
 - KWIC (keyword in context) view	L	Migle
