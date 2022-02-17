@@ -34,3 +34,8 @@ Pushed a lyric scraping script that would allow for an index containing song lyr
 6 hours
 Alina
 Combined the song lyric index and our relevance ranked search infrastructure with the flask demo to create a web UI for the search. Added Bootstrap and CSS to make the formatting of the web UI nicer.
+
+17.2.2022
+2 hours
+Alina
+Fixed the multi-word search and wildcard search functionalities in the web UI version of our relevance-ranked search. Tried out theme extraction using the 100articles.txt document & pushed the code as a new file 'themes.py'. 
