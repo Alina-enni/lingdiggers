@@ -38,4 +38,15 @@ Combined the song lyric index and our relevance ranked search infrastructure wit
 17.2.2022
 2 hours
 Alina
-Fixed the multi-word search and wildcard search functionalities in the web UI version of our relevance-ranked search. Tried out theme extraction using the 100articles.txt document & pushed the code as a new file 'themes.py'. 
+Fixed the multi-word search and wildcard search functionalities in the web UI version of our relevance-ranked search. Tried out theme extraction using the 100articles.txt document & pushed the code as a new file 'themes.py'.
+
+21.2.2022
+2 hours
+Migle
+Worked on printing results with keyword in context.
+
+22.2.2022
+4 hours
+Migle
+Worked on printing results with keyword in context.
+
