@@ -11,7 +11,10 @@ GENIUS_API_TOKEN='OK93fmBOPEHDihuH2xD5IloNlps1sofo_FFX3viQGxSbvbBFOlM9nke5jc9D4r
 from lyricsgenius import Genius
 
 file = open("lyrics2.txt", "a")
-artists = ['Coldplay', 'Tori Amos', 'Michael Jackson', 'Beatles', 'Blur', 'Taylor Swift', 'Blue October', 'Porcupine Tree', 'Muse', 'Annie Lennox', 'Frank Sinatra', 'David Bowie', 'Elton John', 'Bombay Bicycle Club', 'The Kinks', 'Radiohead', 'Bananarama', 'Franz Ferdinand']
+artists = ['Coldplay', 'Tori Amos', 'Michael Jackson', 'Beatles', 'Blur',
+           'Taylor Swift', 'Blue October', 'Porcupine Tree', 'Muse', 'Annie Lennox',
+           'Frank Sinatra', 'David Bowie', 'Elton John', 'Bombay Bicycle Club', 'The Kinks',
+           'Radiohead', 'Bananarama', 'Franz Ferdinand', 'Kate Bush', 'Mos Def', 'Queen', 'Fleetwood Mac']
 genius = Genius(GENIUS_API_TOKEN, skip_non_songs=False, remove_section_headers=True)
 
 def get_lyrics(arr, k):
