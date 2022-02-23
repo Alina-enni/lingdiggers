@@ -4,12 +4,14 @@ from sklearn.feature_extraction.text import CountVectorizer
 import numpy as np
 import re
 import textwrap
+from operator import itemgetter
 
 #Initialize Flask instance
 app = Flask(__name__)
 
 # Filepath for Alina: /Users/alina/Documents/GitHub/flask-example/
-f = open("/Users/alina/Documents/GitHub/flask-example/lyrics2.txt", encoding="utf-8")
+# Filepath for Migle: /Users/migle/myproject/flask-example/lyrics2.txt
+f = open("/Users/migle/myproject/flask-example/lyrics2.txt")
 op = f.read()
 f.close()
 documents = op.split(r'<|endoftext|>')
@@ -47,10 +49,23 @@ def tf_idf_search(tfv5, t2i, query):
                 print("\nThe scores of the documents are:", np.array(hits[hits.nonzero()])[0], "\n")
 
                 ranked_scores_and_doc_ids = sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]), reverse=True)
-                for score, i in ranked_scores_and_doc_ids:
-                    print("The score of", query,
-                        "is {:.4f} in document #{:d}: {:s}".format(score, i, textwrap.shorten(documents[i], width=100)))
-                return ranked_scores_and_doc_ids, hits, total_docs, matching_docs, queryinput
+                matches = []
+                matchingdocs_list = list(map(itemgetter(1), ranked_scores_and_doc_ids)) #list of only matched doc numbers (in ranked order)
+                print("Matching docs ranked:", matchingdocs_list)
+                for search in searchlist:
+                    print(search)
+                    for doc in matchingdocs_list:
+                        working_doc = documents[doc]
+                        if search in working_doc:
+                            index = working_doc.index(search)
+                            matches.append(working_doc[index - 50: index + 50])
+                        else:
+                            continue
+                #for score, i in ranked_scores_and_doc_ids:
+                #    print("The score of", query,
+                #        "is {:.4f} in document #{:d}: {:s}".format(score, i, textwrap.shorten(documents[i], width=100)))
+
+                return ranked_scores_and_doc_ids, hits, total_docs, matching_docs, queryinput, matches
             else:
                 print("Sorry, no matches found in the collection.")
         else:
@@ -60,16 +75,18 @@ def tf_idf_search(tfv5, t2i, query):
         if query != "":
             query_vec5 = tfv5.transform([ query ]).tocsc()  # CSC: compressed sparse column format
             hits = np.dot(query_vec5, sparse_matrix)
-            ranked_scores_and_doc_ids = \
-                sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]), reverse=True)
 
             total_docs = len(hits.nonzero()[1])
             matching_docs = hits.nonzero()[1]
 
+            ranked_scores_and_doc_ids = \
+                sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]), reverse=True)
+
             for score, i in ranked_scores_and_doc_ids:
                 print("The score of", query,
                     "is {:.4f} in document #{:d}: {:s}".format(score, i, textwrap.shorten(documents[i], width=100)))
-            return ranked_scores_and_doc_ids, hits, total_docs, matching_docs
+
+            return ranked_scores_and_doc_ids, hits, total_docs, matching_docs, matches
         else:
             print("Sorry, that document does not exist in the collection.")
 
@@ -84,6 +101,7 @@ def search():
     total_docs = []
     matching_docs = []
     queryinput = []
+    matches = []
 
         #If query exists (i.e. is not None)
     if query:
@@ -93,6 +111,7 @@ def search():
         total_docs = tf_idf_search(tfv5, t2i, query)[2]
         matching_docs = tf_idf_search(tfv5, t2i, query)[3]
         queryinput = tf_idf_search(tfv5, t2i, query)[4]
+        matches = tf_idf_search(tfv5, t2i, query)[5]
 
     #Render index.html with matches variable
-    return render_template('index.html', ranked_scores_and_doc_ids=ranked_scores_and_doc_ids, hits=hits, total_docs=total_docs, matching_docs=matching_docs, documents=documents, queryinput=queryinput)
+    return render_template('index.html', ranked_scores_and_doc_ids=ranked_scores_and_doc_ids, hits=hits, total_docs=total_docs, matching_docs=matching_docs, documents=documents, queryinput=queryinput, matches=matches)
