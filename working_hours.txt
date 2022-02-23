@@ -50,3 +50,7 @@ Worked on printing results with keyword in context.
 Migle
 Worked on printing results with keyword in context.
 
+23.2.2022
+3 hours
+Migle
+Wrote a piece of code which prints results of query with keyword in context for single/part of single word search (more or less). Updated html page as well.
