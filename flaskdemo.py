@@ -22,7 +22,6 @@ sparse_matrix = tfv5.fit_transform(documents).T.tocsr() # CSR: compressed sparse
 vocab = tfv5.vocabulary_
 
 def tf_idf_search(tfv5, vocab, query):
-
     query = query.split()  # Split query in case it contains multiple terms
     if len(query) == 1:  # If query consists of only one term, operate on that
         query = ' '.join(map(str, query))
@@ -87,26 +86,32 @@ def search():
 
     #Get query from URL variable
     query = request.args.get('query')
+    matches = []
     ranked_scores_and_doc_ids = []
     hits = []
     total_docs = []
     matching_docs = []
     queryinput = []
-    matches = []
 
-    results = tf_idf_search(tfv5, vocab, query)
-    if results == None:
-        ranked_scores_and_doc_ids = []
-        hits = []
-        total_docs = "0"
-        matching_docs = "None"
-        queryinput = "None"
-    else:
-        ranked_scores_and_doc_ids = results[0]
-        hits = results[1]
-        total_docs = results[2]
-        matching_docs = results[3]
-        queryinput = results[4]
+        #If query exists (i.e. is not None)
+    if query:
+        #Look at each entry in the example data
+        results = tf_idf_search(tfv5, vocab, query)
+
+        if results == None:
+            ranked_scores_and_doc_ids = []
+            hits = []
+            total_docs = "0"
+            matching_docs = "None"
+            queryinput = "None"
+            matches = []
+        else:
+            ranked_scores_and_doc_ids = results[0]
+            hits = results[1]
+            total_docs = results[2]
+            matching_docs = results[3]
+            queryinput = results[4]
+            matches = results[5]
 
     #Render index.html with matches variable
     return render_template('index.html', ranked_scores_and_doc_ids=ranked_scores_and_doc_ids, hits=hits, total_docs=total_docs, matching_docs=matching_docs, documents=documents, queryinput=queryinput, matches=matches)
