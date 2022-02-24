@@ -11,8 +11,12 @@
 
     <style>
     body {
-        background-color: #c8e0de;
+        background-color: #f5f5f5;
         font-family: 'Arial';
+    }
+    h1 {
+        font-family: 'Georgia';
+        margin-bottom: 5vh;
     }
     .box {
         margin: 0px auto;
@@ -73,12 +77,12 @@
                 <td>{{ queryinput}}</td>
             </tr>
 
-            {% for i in matches %}
+            {% for score, i in ranked_scores_and_doc_ids %}
 
             <tr>
                 <!--Display the name of the item based on the "name" key-->
-                <td>  </td>
-                <td>...{{ i }}...</td>
+                <td>{{ score }}</td>
+                <td>{{ documents[i] }}</td>
 
             </tr>
             <!--End for loop-->
@@ -96,5 +100,7 @@
     </body>
 
 </html>
-            
+               
+                               
+
                                
