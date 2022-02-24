@@ -54,3 +54,8 @@ Worked on printing results with keyword in context.
 3 hours
 Migle
 Wrote a piece of code which prints results of query with keyword in context for single/part of single word search (more or less). Updated html page as well.
+
+24.2.2022
+2 hours
+Alina
+Removed the unnecessary Boolean search elements from our code and replaced them with just the necessary tfv5 variable. This ensures that when the search query is processed, it is processed using the right variables. Also tried to figure out what's wrong with the KWIC feature but cannot get it to run for some reason.
