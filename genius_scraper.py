@@ -10,7 +10,7 @@ GENIUS_API_TOKEN='OK93fmBOPEHDihuH2xD5IloNlps1sofo_FFX3viQGxSbvbBFOlM9nke5jc9D4r
 
 from lyricsgenius import Genius
 
-file = open("lyrics2.txt", "a", encoding="utf-8")
+file = open("lyrics2.txt", "w", encoding="utf-8")
 artists = ['Coldplay', 'Tori Amos', 'Michael Jackson', 'Beatles', 'Blur',
            'Taylor Swift', 'Blue October', 'Porcupine Tree', 'Muse', 'Annie Lennox',
            'Frank Sinatra', 'David Bowie', 'Elton John', 'Bombay Bicycle Club', 'The Kinks',
