@@ -11,7 +11,8 @@ app = Flask(__name__)
 
 # Filepath for Alina: /Users/alina/Documents/GitHub/flask-example/
 # Filepath for Migle: /Users/migle/myproject/flask-example/lyrics2.txt
-f = open("/Users/migle/myproject/flask-example/lyrics2.txt")
+f = open("/Users/migle/myproject/flask-example/lyrics2.txt", encoding="utf-8")
+
 op = f.read()
 f.close()
 documents = op.split(r'<|endoftext|>')
