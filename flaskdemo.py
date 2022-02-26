@@ -28,7 +28,7 @@ def tf_idf_search(tfv5, vocab, query):
         if query != "":
             searchlist = []
             for word in vocab.keys():  # looping through all possible words in doc
-                if re.search('^({}.+|{})'.format(query, query), word, re.IGNORECASE):  # if it finds words that start with the query...
+                if re.search('^({}.+|{}|.+{}.+|.+{}$)'.format(query, query, query, query), word, re.IGNORECASE):  # if it finds words that start with the query...
                     searchlist.append(word)  # ...it appends them to our new list
             if searchlist != []:
                 queryinput = ", "
@@ -44,15 +44,37 @@ def tf_idf_search(tfv5, vocab, query):
 
                 ranked_scores_and_doc_ids = sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]), reverse=True)
                 matches = []
-                matchingdocs_list = list(map(itemgetter(1), ranked_scores_and_doc_ids)) #list of only matched doc numbers (in ranked order)
-                print("Matching docs ranked:", matchingdocs_list)
+                matchingdocs_list = list(
+                    map(itemgetter(1), ranked_scores_and_doc_ids))  # list of only matched doc numbers (in ranked order)
+                print(matchingdocs_list)
+
+                y = ("a, b",)
+                count = tuple()
+                count += y
                 for search in searchlist:
-                    print(search)
                     for doc in matchingdocs_list:
                         working_doc = documents[doc]
-                        if search in working_doc:
-                            index = working_doc.index(search)
-                            matches.append(working_doc[index - 50: index + 50])
+                        artist_and_song = working_doc.split("\n")  # split on newline to discern artist and song names
+                        for i in artist_and_song:  # to remove empty strings (newlines at the beginning of original doc + probably in between verses)
+                            if re.match(r'^\s+$', i):
+                                artist_and_song.remove(i)
+                            else:
+                                continue
+                        artistname = artist_and_song[0].strip("Artist: ")
+                        songname = artist_and_song[1]
+                        lyrics = ' '.join(artist_and_song[2:]).casefold()  # join actual lyrics back into one string
+                        index = lyrics.find(
+                            search)  # find the index of searched word #finds it in any part of word > changed regex above to fit this
+                        tuple_doc_and_index = ("{}, {}".format(doc, index),)  # tuple of doc number and index of word
+                        if index != -1:  # index returns -1 when the search does not exist in the string
+                            if tuple_doc_and_index not in count:
+                                count += ("{}, {}".format(doc, index),)
+                                if index >= 50:  # not sure if still necessary
+                                    matches.append(
+                                        "{} - {} | ...{}...".format(artistname, songname, lyrics[index - 50: index + 50]))
+                                elif index < 50:
+                                    matches.append(
+                                        "{} - {} | ...{}...".format(artistname, songname, lyrics[0: index + 100]))
                         else:
                             continue
                 return ranked_scores_and_doc_ids, hits, total_docs, matching_docs, queryinput, matches
@@ -76,7 +98,7 @@ def tf_idf_search(tfv5, vocab, query):
                 print("The score of", query,
                     "is {:.4f} in document #{:d}: {:s}".format(score, i, textwrap.shorten(documents[i], width=100)))
 
-            return ranked_scores_and_doc_ids, hits, total_docs, matching_docs, matches
+            return ranked_scores_and_doc_ids, hits, total_docs, matching_docs
         else:
             None
 

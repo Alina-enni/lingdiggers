@@ -77,17 +77,19 @@
                 <td>{{ queryinput}}</td>
             </tr>
 
-            {% for score, i in ranked_scores_and_doc_ids %}
 
+        </table>
+
+            <table>
+                {% for i in matches %}
             <tr>
                 <!--Display the name of the item based on the "name" key-->
-                <td>{{ score }}</td>
-                <td>{{ documents[i] }}</td>
-
-            </tr>
-            <!--End for loop-->
+                <td>{{ i }}</td>
+                <!--End for loop-->
             {% endfor %}
-        </table>
+            </tr>
+            </table>
+
         </div></div></div>
 
         <div class="row">
