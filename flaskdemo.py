@@ -71,11 +71,9 @@ def tf_idf_search(tfv5, vocab, query):
                             if tuple_doc_and_index not in count:
                                 count += ("{}, {}".format(doc, index),)
                                 if index >= 50:  # not sure if still necessary
-                                    matches.append(
-                                        "{} - {} | ...{}...".format(artistname, songname, lyrics[index - 50: index + 50]))
+                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[index - 50: index + 50])),)
                                 elif index < 50:
-                                    matches.append(
-                                        "{} - {} | ...{}...".format(artistname, songname, lyrics[0: index + 100]))
+                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[0: index + 100])),)
                         else:
                             continue
                 return ranked_scores_and_doc_ids, hits, total_docs, matching_docs, queryinput, matches

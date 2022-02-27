@@ -81,12 +81,13 @@
         </table>
 
             <table>
-                {% for i in matches %}
+                {% for data, lyrics in matches %}
             <tr>
                 <!--Display the name of the item based on the "name" key-->
-                <td>{{ i }}</td>
+                    <td>{{ data }}</td>
+                    <td>{{ lyrics }}</td>
                 <!--End for loop-->
-            {% endfor %}
+                {% endfor %}
             </tr>
             </table>
 
