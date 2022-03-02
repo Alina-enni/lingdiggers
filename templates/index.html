@@ -49,6 +49,15 @@
         text-align: justify; 
         padding: 2vh;
     }
+    h3 {
+        font-size: 18px;
+        font-family: 'Georgia';
+        font-weight: normal;
+    }
+    #themes td {
+        padding: 5px;
+        text-align: left;
+    }
     </style>
     </head>
     <body>
@@ -63,18 +72,29 @@
             <input type="text" name="query" autofocus>
             <input type="submit" value="Search">
         </form>
+
+        <h3>The top 5 themes found in this song lyric index are:</h3>
+        <table id="themes">
+            {% for key in theme_dictionary %}
+            <tr>
+                    <td><strong>{{ theme_dictionary[key] }}</strong>
+                    <td>{{ key }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
         <table>
 
             <!--Go through each item in the "matches" variable sent from
                 search() function in the Flask app-->
             
             <tr>
-                <td>Total documents: {{ total_docs }}</td>
-                <td>The matching documents are: {{ matching_docs }}</td>
+                <td><strong>Total matching documents:</strong> {{ total_docs }}</td>
+                <td><strong>The matches are:</strong> {{ matching_docs }}</td>
             </tr>
             <tr>
-                <td>The following words were found:</td>
-                <td>{{ queryinput}}</td>
+                <td><strong>The following words were found:</strong></td>
+                <td>{{ queryinput }}</td>
             </tr>
 
 
@@ -102,8 +122,6 @@
     </article>
     </body>
 
-</html>
-               
-                               
+</html>            
 
                                

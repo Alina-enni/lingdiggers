@@ -5,13 +5,18 @@ import numpy as np
 import re
 import textwrap
 from operator import itemgetter
+import pke
+
+{
+    "python.pythonPath": "/Library/Frameworks/Python.framework/Versions/3.9/bin/python3",
+}
 
 #Initialize Flask instance
 app = Flask(__name__)
 
 # Filepath for Alina: /Users/alina/Documents/GitHub/flask-example/
 # Filepath for Migle: /Users/migle/myproject/flask-example/lyrics2.txt
-f = open("/Users/migle/myproject/flask-example/lyrics2.txt", encoding="utf-8")
+f = open("/Users/alina/Documents/GitHub/flask-example/lyrics2.txt")
 
 op = f.read()
 f.close()
@@ -21,6 +26,29 @@ documents = op.split(r'<|endoftext|>')
 tfv5 = TfidfVectorizer(lowercase=True, sublinear_tf=True, use_idf=True, norm="l2")
 sparse_matrix = tfv5.fit_transform(documents).T.tocsr() # CSR: compressed sparse row format => order by terms
 vocab = tfv5.vocabulary_
+
+# initialize keyphrase extraction model, here TopicRank
+extractor = pke.unsupervised.TopicRank()
+
+# load the content of the document, here document is expected to be in raw
+# format (i.e. a simple text file) and preprocessing is carried out using spacy
+file=open('/Users/alina/Documents/GitHub/lingdiggers/lyrics2.txt',encoding ='unicode_escape').read()
+extractor.load_document(input=file, language='en')
+
+# keyphrase candidate selection, in the case of TopicRank: sequences of nouns
+# and adjectives (i.e. `(Noun|Adj)*`)
+extractor.candidate_selection()
+
+# candidate weighting, in the case of TopicRank: using a random walk algorithm
+extractor.candidate_weighting()
+
+# N-best selection, keyphrases contains the 10 highest scored candidates as
+# (keyphrase, score) tuples
+keyphrases = extractor.get_n_best(n=5)
+
+theme_dictionary = {}         # Put the keyphrases in a dictionary
+for i, y in keyphrases:
+    theme_dictionary[y] = i
 
 def tf_idf_search(tfv5, vocab, query):
     query = query.split()  # Split query in case it contains multiple terms
@@ -135,4 +163,4 @@ def search():
             matches = results[5]
 
     #Render index.html with matches variable
-    return render_template('index.html', ranked_scores_and_doc_ids=ranked_scores_and_doc_ids, hits=hits, total_docs=total_docs, matching_docs=matching_docs, documents=documents, queryinput=queryinput, matches=matches)
+    return render_template('index.html', ranked_scores_and_doc_ids=ranked_scores_and_doc_ids, hits=hits, total_docs=total_docs, matching_docs=matching_docs, documents=documents, queryinput=queryinput, matches=matches, theme_dictionary=theme_dictionary)
