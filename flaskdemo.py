@@ -89,9 +89,9 @@ def tf_idf_search(tfv5, vocab, query):
                                 artist_and_song.remove(i)
                             else:
                                 continue
-                        artistname = artist_and_song[0].strip("Artist: ")
-                        songname = artist_and_song[1]
-                        lyrics = ' '.join(artist_and_song[2:]).casefold()  # join actual lyrics back into one string
+                        artistname = artist_and_song[0]
+                        songname = artist_and_song[1].replace(" Lyrics", "")
+                        lyrics = ' '.join(artist_and_song[0:]).casefold()  # join actual lyrics back into one string
                         index = lyrics.find(
                             search)  # find the index of searched word #finds it in any part of word > changed regex above to fit this
                         tuple_doc_and_index = ("{}, {}".format(doc, index),)  # tuple of doc number and index of word
