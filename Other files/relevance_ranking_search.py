@@ -5,7 +5,7 @@ import re
 import textwrap
 
 # Filepath for Alina: /Users/alina/Documents/GitHub/lingdiggers/
-f = open("100articles.txt", encoding="utf-8")
+f = open("/Users/alina/Documents/GitHub/lingdiggers/100articles.txt", encoding="utf-8")
 op = f.read()
 f.close()
 op = re.sub(r'\n', r'', op)
