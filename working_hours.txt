@@ -79,3 +79,8 @@ Pushed a new version of printing keyword in context. "Rewrote" the lyrics file.
 3 hours
 Alina
 Tried to fix the bug that causes no results to be displayed when the query is identical to the name of the artist or the song. Could not achieve this. Then I moved on to the theme extraction and added this feature to our search engine. It seems to work fine and displays the 5 top themes in the lyrics index.
+
+3.3.2022
+1 hour
+Alina
+Changed the theme extraction feature so that it now extracts the top 5 themes for each individual query.
