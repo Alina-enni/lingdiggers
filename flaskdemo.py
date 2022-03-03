@@ -27,28 +27,31 @@ tfv5 = TfidfVectorizer(lowercase=True, sublinear_tf=True, use_idf=True, norm="l2
 sparse_matrix = tfv5.fit_transform(documents).T.tocsr() # CSR: compressed sparse row format => order by terms
 vocab = tfv5.vocabulary_
 
-# initialize keyphrase extraction model, here TopicRank
-extractor = pke.unsupervised.TopicRank()
+def extract_themes(extract_input):
+    # initialize keyphrase extraction model, here TopicRank
+    extractor = pke.unsupervised.TopicRank()
 
-# load the content of the document, here document is expected to be in raw
-# format (i.e. a simple text file) and preprocessing is carried out using spacy
-file=open('/Users/alina/Documents/GitHub/lingdiggers/lyrics2.txt',encoding ='unicode_escape').read()
-extractor.load_document(input=file, language='en')
+    # load the content of the document, here document is expected to be in raw
+    # format (i.e. a simple text file) and preprocessing is carried out using spacy
+    #file=open('/Users/alina/Documents/GitHub/lingdiggers/lyrics2.txt',encoding ='unicode_escape').read()
+    extractor.load_document(input=extract_input, language='en')
 
-# keyphrase candidate selection, in the case of TopicRank: sequences of nouns
-# and adjectives (i.e. `(Noun|Adj)*`)
-extractor.candidate_selection()
+    # keyphrase candidate selection, in the case of TopicRank: sequences of nouns
+    # and adjectives (i.e. `(Noun|Adj)*`)
+    extractor.candidate_selection()
 
-# candidate weighting, in the case of TopicRank: using a random walk algorithm
-extractor.candidate_weighting()
+    # candidate weighting, in the case of TopicRank: using a random walk algorithm
+    extractor.candidate_weighting()
 
-# N-best selection, keyphrases contains the 10 highest scored candidates as
-# (keyphrase, score) tuples
-keyphrases = extractor.get_n_best(n=5)
+    # N-best selection, keyphrases contains the 10 highest scored candidates as
+    # (keyphrase, score) tuples
+    keyphrases = extractor.get_n_best(n=5)
 
-theme_dictionary = {}         # Put the keyphrases in a dictionary
-for i, y in keyphrases:
-    theme_dictionary[y] = i
+    theme_dictionary = {}         # Put the keyphrases in a dictionary
+    for i, y in keyphrases:
+        theme_dictionary[y] = i
+    return theme_dictionary
+
 
 def tf_idf_search(tfv5, vocab, query):
     query = query.split()  # Split query in case it contains multiple terms
@@ -69,13 +72,15 @@ def tf_idf_search(tfv5, vocab, query):
                 total_docs = len(hits.nonzero()[1])
                 matching_docs = hits.nonzero()[1]
 
-                print("\nThe scores of the documents are:", np.array(hits[hits.nonzero()])[0], "\n")
-
                 ranked_scores_and_doc_ids = sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]), reverse=True)
                 matches = []
                 matchingdocs_list = list(
                     map(itemgetter(1), ranked_scores_and_doc_ids))  # list of only matched doc numbers (in ranked order)
-                print(matchingdocs_list)
+
+                themedocs = " "
+                for match in matching_docs:         # Theme extraction for the query
+                    themedocs += documents[match]
+                themes = extract_themes(themedocs)
 
                 y = ("a, b",)
                 count = tuple()
@@ -104,7 +109,7 @@ def tf_idf_search(tfv5, vocab, query):
                                     matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[0: index + 100])),)
                         else:
                             continue
-                return ranked_scores_and_doc_ids, hits, total_docs, matching_docs, queryinput, matches
+                return ranked_scores_and_doc_ids, hits, total_docs, matching_docs, queryinput, matches, themes
         else:
             return None
 
@@ -141,6 +146,7 @@ def search():
     total_docs = []
     matching_docs = []
     queryinput = []
+    themes = {}
 
         #If query exists (i.e. is not None)
     if query:
@@ -154,6 +160,7 @@ def search():
             matching_docs = "None"
             queryinput = "None"
             matches = []
+            themes = {}
         else:
             ranked_scores_and_doc_ids = results[0]
             hits = results[1]
@@ -161,6 +168,7 @@ def search():
             matching_docs = results[3]
             queryinput = results[4]
             matches = results[5]
+            themes = results[6]
 
     #Render index.html with matches variable
-    return render_template('index.html', ranked_scores_and_doc_ids=ranked_scores_and_doc_ids, hits=hits, total_docs=total_docs, matching_docs=matching_docs, documents=documents, queryinput=queryinput, matches=matches, theme_dictionary=theme_dictionary)
+    return render_template('index.html', ranked_scores_and_doc_ids=ranked_scores_and_doc_ids, hits=hits, total_docs=total_docs, matching_docs=matching_docs, documents=documents, queryinput=queryinput, matches=matches, themes=themes)

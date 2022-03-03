@@ -78,11 +78,11 @@
             <input type="submit" value="Search">
         </form>
 
-        <h3>The top 5 themes found in this song lyric index are:</h3>
+        <h3>The top 5 themes for this search are:</h3>
         <table id="themes">
-            {% for key in theme_dictionary %}
+            {% for key in themes %}
             <tr>
-                    <td><strong>{{ theme_dictionary[key] }}</strong>
+                    <td><strong>{{ themes[key] }}</strong>
                     <td>{{ key }}</td>
             </tr>
             {% endfor %}
@@ -128,6 +128,4 @@
     </article>
     </body>
 
-</html>
-              
-                               
+</html>           
