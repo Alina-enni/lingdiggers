@@ -13,6 +13,7 @@
     body {
         background-color: #f5f5f5;
         font-family: 'Arial';
+        color: #2e2e2e;
     }
     h1 {
         font-family: 'Georgia';
@@ -49,6 +50,22 @@
         text-align: left; 
         padding: 2vh;
     }
+    .results {
+        margin-top: 2vh;
+        width: 100%;
+    }
+    .results td {
+        padding: 2vh;
+        border: 1px solid #d6d6d6;
+        background-color: #fff;
+    }
+    .title {
+        font-family: 'Georgia';
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
     h3 {
         margin-top: 4vh;
         margin-bottom: 3vh;
@@ -56,10 +73,10 @@
         font-family: 'Georgia';
         font-weight: normal;
     }
-    #themes {
+    .themes {
         margin-bottom: 3vh;
     }
-    #themes td {
+    .themes td {
         padding: 5px;
         text-align: left;
     }
@@ -69,7 +86,7 @@
         <article>
         <div class="container-fluid">
         <div class="row">
-        <div class="box col-md-10">
+        <div class="box col-md-11">
 
         <h1>Song lyric search</h1>
         <!--Reload the page with variable "query" in the URL-->
@@ -79,7 +96,7 @@
         </form>
 
         <h3>The top 5 themes for this search are:</h3>
-        <table id="themes">
+        <table class="themes">
             {% for key in themes %}
             <tr>
                     <td><strong>{{ themes[key] }}</strong>
@@ -92,7 +109,6 @@
 
             <!--Go through each item in the "matches" variable sent from
                 search() function in the Flask app-->
-            
             <tr>
                 <td><strong>Total matching documents:</strong> {{ total_docs }}</td>
                 <td><strong>The matches are:</strong> {{ matching_docs }}</td>
@@ -105,8 +121,13 @@
 
         </table>
 
-            <table>
-                {% for data, lyrics in matches %}
+            <table class="results">
+            <tr>
+                <td class="title">Song</td>
+                <td class="title">Lyrics</td>
+                <td class="title">Video</td>
+            </tr>
+            {% for data, lyrics in matches %}
             <tr>
                 <!--Display the name of the item based on the "name" key-->
                     <td>{{ data }}</td>
@@ -128,4 +149,4 @@
     </article>
     </body>
 
-</html>           
+</html>     

@@ -143,9 +143,9 @@ def search():
     matches = []
     ranked_scores_and_doc_ids = []
     hits = []
-    total_docs = []
-    matching_docs = []
-    queryinput = []
+    total_docs = "0"
+    matching_docs = ""
+    queryinput = ""
     themes = {}
 
         #If query exists (i.e. is not None)
