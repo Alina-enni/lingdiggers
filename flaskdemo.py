@@ -82,12 +82,11 @@ def tf_idf_search(tfv5, vocab, query):
                     themedocs += documents[match]
                 themes = extract_themes(themedocs)
 
-                y = ("a, b",)
                 count = tuple()
-                count += y
-                for search in searchlist:
-                    for doc in matchingdocs_list:
-                        working_doc = documents[doc]
+                for doc in matchingdocs_list:
+                    working_doc = documents[doc]
+                    for search in searchlist:
+                        search = " " + search + " "
                         artist_and_song = working_doc.split("\n")  # split on newline to discern artist and song names
                         for i in artist_and_song:  # to remove empty strings (newlines at the beginning of original doc + probably in between verses)
                             if re.match(r'^\s+$', i):
@@ -97,8 +96,7 @@ def tf_idf_search(tfv5, vocab, query):
                         artistname = artist_and_song[0]
                         songname = artist_and_song[1].replace(" Lyrics", "")
                         lyrics = ' '.join(artist_and_song[0:]).casefold()  # join actual lyrics back into one string
-                        index = lyrics.find(
-                            search)  # find the index of searched word #finds it in any part of word > changed regex above to fit this
+                        index = lyrics.find(search)  # find the index of searched word
                         tuple_doc_and_index = ("{}, {}".format(doc, index),)  # tuple of doc number and index of word
                         if index != -1:  # index returns -1 when the search does not exist in the string
                             if tuple_doc_and_index not in count:
