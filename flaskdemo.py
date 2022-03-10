@@ -111,26 +111,65 @@ def tf_idf_search(tfv5, vocab, query):
         else:
             return None
 
-
     elif len(query) > 1:  # If query consists of multiple terms
         query = ' '.join(map(str, query))
-        if query != "":
-            query_vec5 = tfv5.transform([ query ]).tocsc()  # CSC: compressed sparse column format
-            hits = np.dot(query_vec5, sparse_matrix)
+        if query != []:
+            searchlist = []
+            searches = query.split()
+            for i in searches:
+                for word in vocab.keys():  # looping through all possible words in doc
+                    if re.search('^({}.+|{}|.+{}.+|.+{}$)'.format(i, i, i, i), word, re.IGNORECASE):  # if it finds words that start with the query...
+                        searchlist.append(word)  # ...it appends them to our new list
+            
+            if searchlist != []:
+                queryinput = ", "
+                queryinput = queryinput.join(searchlist)  # joined members of list into a string
 
-            total_docs = len(hits.nonzero()[1])
-            matching_docs = hits.nonzero()[1]
+                query_vec5 = tfv5.transform([ query ]).tocsc()  # CSC: compressed sparse column format
+                hits = np.dot(query_vec5, sparse_matrix)
 
-            ranked_scores_and_doc_ids = \
-                sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]), reverse=True)
+                total_docs = len(hits.nonzero()[1])
+                matching_docs = hits.nonzero()[1]
 
-            for score, i in ranked_scores_and_doc_ids:
-                print("The score of", query,
-                    "is {:.4f} in document #{:d}: {:s}".format(score, i, textwrap.shorten(documents[i], width=100)))
+                ranked_scores_and_doc_ids = sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]), reverse=True)
+                matches = []
+                matchingdocs_list = list(
+                    map(itemgetter(1), ranked_scores_and_doc_ids))  # list of only matched doc numbers (in ranked order)
 
-            return ranked_scores_and_doc_ids, hits, total_docs, matching_docs
+                themedocs = " "
+                for match in matching_docs:         # Theme extraction for the query
+                    themedocs += documents[match]
+                themes = extract_themes(themedocs)
+
+                count = tuple()
+                for doc in matchingdocs_list:
+                    working_doc = documents[doc]
+                    for search in query:
+                        search = " " + search + " "
+                        artist_and_song = working_doc.split("\n")  # split on newline to discern artist and song names
+                        for i in artist_and_song:  # to remove empty strings (newlines at the beginning of original doc + probably in between verses)
+                            if re.match(r'^\s+$', i):
+                                artist_and_song.remove(i)
+                            else:
+                                continue
+
+                        artistname = artist_and_song[0]
+                        songname = artist_and_song[1].replace(" Lyrics", "")
+                        lyrics = ' '.join(artist_and_song[0:]).casefold()  # join actual lyrics back into one string
+                        index = lyrics.find(search)  # find the index of searched word
+                        tuple_doc_and_index = ("{}, {}".format(doc, index),)  # tuple of doc number and index of word
+                        if index != -1:  # index returns -1 when the search does not exist in the string
+                            if tuple_doc_and_index not in count:
+                                count += ("{}, {}".format(doc, index),)
+                                if index >= 50:  # not sure if still necessary
+                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[index - 50: index + 50])),)
+                                elif index < 50:
+                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[0: index + 100])),)
+                        else:
+                            continue
+                return ranked_scores_and_doc_ids, hits, total_docs, matching_docs, queryinput, matches, themes
         else:
-            None
+            return None
 
 #Function search() is associated with the address base URL + "/search"
 @app.route('/search')
