@@ -72,9 +72,12 @@ def tf_idf_search(tfv5, vocab, query):
                                 artist_and_song.remove(i)
                             else:
                                 continue
+                        if len(artist_and_song[0]) == 1 and artist_and_song[0][0] == ' ':
+                            artist_and_song.pop(0)
                         artistname = artist_and_song[0]
                         songname = artist_and_song[1].replace(" Lyrics", "")
-                        lyrics = ' '.join(artist_and_song[0:]).casefold()  # Join lyrics back into one string
+                        video_code = artist_and_song[-1]
+                        lyrics = " " + ' '.join(artist_and_song[0:-2]).casefold()  # Join lyrics back into one string
                         if search in artistname.casefold():
                             pass
                         else:
@@ -86,9 +89,9 @@ def tf_idf_search(tfv5, vocab, query):
                             if tuple_doc_and_index not in count:
                                 count += ("{}, {}".format(doc, index),)
                                 if index >= 50:
-                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[index - 50: index + 50])),)
+                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[index - 50: index + 50]), "{}".format(video_code)),)
                                 elif index < 50:
-                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[0: index + 100])),)
+                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[0: index + 100]), "{}".format(video_code)),)
                         else:
                             continue
                 return ranked_scores_and_doc_ids, hits, total_docs, matching_docs, queryinput, matches, themes
@@ -136,19 +139,21 @@ def tf_idf_search(tfv5, vocab, query):
                                 artist_and_song.remove(i)
                             else:
                                 continue
-
+                        if len(artist_and_song[0]) == 1 and artist_and_song[0][0] == ' ':
+                            artist_and_song.pop(0)
                         artistname = artist_and_song[0]
                         songname = artist_and_song[1].replace(" Lyrics", "")
-                        lyrics = ' '.join(artist_and_song[0:]).casefold()  # Join lyrics back into one string
+                        video_code = artist_and_song[-1]
+                        lyrics = " " + ' '.join(artist_and_song[0:-2]).casefold()  # Join lyrics back into one string
                         index = lyrics.find(search)  # Find the index of the searched word
                         tuple_doc_and_index = ("{}, {}".format(doc, index),)
                         if index != -1:  # Returns -1 when the search does not exist in the string
                             if tuple_doc_and_index not in count:
                                 count += ("{}, {}".format(doc, index),)
                                 if index >= 50: 
-                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[index - 50: index + 50])),)
+                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[index - 50: index + 50]), "{}".format(video_code)),)
                                 elif index < 50:
-                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[0: index + 100])),)
+                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[0: index + 100]), "{}".format(video_code)),)
                         else:
                             continue
                 return ranked_scores_and_doc_ids, hits, total_docs, matching_docs, queryinput, matches, themes
