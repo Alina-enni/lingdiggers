@@ -182,13 +182,11 @@
                     <table class="results"><tr>
                         <td class="title">Song</td>
                         <td class="title">Lyrics</td>
-                        <td class="title">Video</td>
                     </tr>
                     {% for data, lyrics in matches %}
                     <tr>
                             <td>{{ data }}</td>
                             <td>{{ lyrics }}</td>
-                            <td><iframe width="480" height="270" src="http://www.youtube.com/embed?listType=search&list=search+query+here" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></td>
                     {% endfor %}
                     </tr>
                     </table>
