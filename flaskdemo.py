@@ -6,17 +6,10 @@ import re
 from operator import itemgetter
 import pke
 
-{
-    "python.pythonPath": "/Library/Frameworks/Python.framework/Versions/3.9/bin/python3",
-}
-
 #Initialize Flask instance
 app = Flask(__name__)
 
-# Filepath for Alina: /Users/alina/Documents/GitHub/flask-example/
-# Filepath for Migle: /Users/migle/myproject/flask-example/lyrics2.txt
-f = open("/Users/alina/Documents/GitHub/flask-example/lyrics2.txt")
-
+f = open("YOUR_FILEPATH/lyrics2.txt")       # Use accurate file path to open your song lyric index (.txt file)
 op = f.read()
 f.close()
 documents = op.split(r'<|endoftext|>')
@@ -29,41 +22,30 @@ vocab = tfv5.vocabulary_
 def extract_themes(extract_input):
     # initialize keyphrase extraction model, here TopicRank
     extractor = pke.unsupervised.TopicRank()
-
-    # load the content of the document, here document is expected to be in raw
-    # format (i.e. a simple text file) and preprocessing is carried out using spacy
-    #file=open('/Users/alina/Documents/GitHub/lingdiggers/lyrics2.txt',encoding ='unicode_escape').read()
     extractor.load_document(input=extract_input, language='en')
-
-    # keyphrase candidate selection, in the case of TopicRank: sequences of nouns
-    # and adjectives (i.e. `(Noun|Adj)*`)
     extractor.candidate_selection()
-
-    # candidate weighting, in the case of TopicRank: using a random walk algorithm
     extractor.candidate_weighting()
-
-    # N-best selection, keyphrases contains the 10 highest scored candidates as
-    # (keyphrase, score) tuples
+    # N-best selection, keyphrases contains the 10 highest scored candidates as (keyphrase, score) tuples
     keyphrases = extractor.get_n_best(n=5)
+    theme_dictionary = {}                   # Put the keyphrases in a dictionary
 
-    theme_dictionary = {}         # Put the keyphrases in a dictionary
     for i, y in keyphrases:
         theme_dictionary[y] = i
     return theme_dictionary
 
-
 def tf_idf_search(tfv5, vocab, query):
-    query = query.split()  # Split query in case it contains multiple terms
-    if len(query) == 1:  # If query consists of only one term, operate on that
+    query = query.split()
+    if len(query) == 1:  # If query consists of only one term
         query = ' '.join(map(str, query))
         if query != "":
             searchlist = []
-            for word in vocab.keys():  # looping through all possible words in doc
-                if re.search('^({}.+|{}|.+{}.+|.+{}$)'.format(query, query, query, query), word, re.IGNORECASE):  # if it finds words that start with the query...
-                    searchlist.append(word)  # ...it appends them to our new list
+            for word in vocab.keys():  # Loop through all possible words in the doc
+                if re.search('^({}.+|{}|.+{}.+|.+{}$)'.format(query, query, query, query), word, re.IGNORECASE):  # If we find words that start with the query...
+                    searchlist.append(word)  # ...append them to list
+
             if searchlist != []:
                 queryinput = ", "
-                queryinput = queryinput.join(searchlist)  # joined members of list into a string
+                queryinput = queryinput.join(searchlist)
 
                 query_vec5 = tfv5.transform([queryinput]).tocsc()  # CSC: compressed sparse column format
                 hits = np.dot(query_vec5, sparse_matrix)
@@ -74,7 +56,7 @@ def tf_idf_search(tfv5, vocab, query):
                 ranked_scores_and_doc_ids = sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]), reverse=True)
                 matches = []
                 matchingdocs_list = list(
-                    map(itemgetter(1), ranked_scores_and_doc_ids))  # list of only matched doc numbers (in ranked order)
+                    map(itemgetter(1), ranked_scores_and_doc_ids))  # Only matched doc numbers (in ranked order)
 
                 themedocs = " "
                 for match in matching_docs:         # Theme extraction for the query
@@ -85,25 +67,26 @@ def tf_idf_search(tfv5, vocab, query):
                 for doc in matchingdocs_list:
                     working_doc = documents[doc]
                     for search in searchlist:
-                        artist_and_song = working_doc.split("\n")  # split on newline to discern artist and song names
-                        for i in artist_and_song:  # to remove empty strings (newlines at the beginning of original doc + probably in between verses)
+                        artist_and_song = working_doc.split("\n")  # Split on the newline to discern artist and song name
+                        for i in artist_and_song:  # Remove empty strings
                             if re.match(r'^\s+$', i):
                                 artist_and_song.remove(i)
                             else:
                                 continue
                         artistname = artist_and_song[0]
                         songname = artist_and_song[1].replace(" Lyrics", "")
-                        lyrics = ' '.join(artist_and_song[0:]).casefold()  # join actual lyrics back into one string
+                        lyrics = ' '.join(artist_and_song[0:]).casefold()  # Join lyrics back into one string
                         if search in artistname.casefold():
                             pass
                         else:
                             search = " " + search + " "
-                        index = lyrics.find(search)  # find the index of searched word
-                        tuple_doc_and_index = ("{}, {}".format(doc, index),)  # tuple of doc number and index of word
-                        if index != -1:  # index returns -1 when the search does not exist in the string
+                        index = lyrics.find(search)  # Find the index of the searched word
+
+                        tuple_doc_and_index = ("{}, {}".format(doc, index),) 
+                        if index != -1:  # Returns -1 when the search does not exist in the string
                             if tuple_doc_and_index not in count:
                                 count += ("{}, {}".format(doc, index),)
-                                if index >= 50:  # not sure if still necessary
+                                if index >= 50:
                                     matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[index - 50: index + 50])),)
                                 elif index < 50:
                                     matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[0: index + 100])),)
@@ -119,13 +102,13 @@ def tf_idf_search(tfv5, vocab, query):
             searchlist = []
             searches = query.split()
             for i in searches:
-                for word in vocab.keys():  # looping through all possible words in doc
-                    if re.search('^({}.+|{}|.+{}.+|.+{}$)'.format(i, i, i, i), word, re.IGNORECASE):  # if it finds words that start with the query...
-                        searchlist.append(word)  # ...it appends them to our new list
+                for word in vocab.keys():  # Loop through all possible words in the doc
+                    if re.search('^({}.+|{}|.+{}.+|.+{}$)'.format(i, i, i, i), word, re.IGNORECASE):  # If we find words that start with the query...
+                        searchlist.append(word)  # ...append to new list
             
             if searchlist != []:
                 queryinput = ", "
-                queryinput = queryinput.join(searchlist)  # joined members of list into a string
+                queryinput = queryinput.join(searchlist)
 
                 query_vec5 = tfv5.transform([ query ]).tocsc()  # CSC: compressed sparse column format
                 hits = np.dot(query_vec5, sparse_matrix)
@@ -136,7 +119,7 @@ def tf_idf_search(tfv5, vocab, query):
                 ranked_scores_and_doc_ids = sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]), reverse=True)
                 matches = []
                 matchingdocs_list = list(
-                    map(itemgetter(1), ranked_scores_and_doc_ids))  # list of only matched doc numbers (in ranked order)
+                    map(itemgetter(1), ranked_scores_and_doc_ids))  # Only matched doc numbers (in ranked order)
 
                 themedocs = " "
                 for match in matching_docs:         # Theme extraction for the query
@@ -148,8 +131,8 @@ def tf_idf_search(tfv5, vocab, query):
                     working_doc = documents[doc]
                     for search in query:
                         search = " " + search + " "
-                        artist_and_song = working_doc.split("\n")  # split on newline to discern artist and song names
-                        for i in artist_and_song:  # to remove empty strings (newlines at the beginning of original doc + probably in between verses)
+                        artist_and_song = working_doc.split("\n")  # Split on the newline to discern artist and song name
+                        for i in artist_and_song:  # Remove empty strings
                             if re.match(r'^\s+$', i):
                                 artist_and_song.remove(i)
                             else:
@@ -157,13 +140,13 @@ def tf_idf_search(tfv5, vocab, query):
 
                         artistname = artist_and_song[0]
                         songname = artist_and_song[1].replace(" Lyrics", "")
-                        lyrics = ' '.join(artist_and_song[0:]).casefold()  # join actual lyrics back into one string
-                        index = lyrics.find(search)  # find the index of searched word
-                        tuple_doc_and_index = ("{}, {}".format(doc, index),)  # tuple of doc number and index of word
-                        if index != -1:  # index returns -1 when the search does not exist in the string
+                        lyrics = ' '.join(artist_and_song[0:]).casefold()  # Join lyrics back into one string
+                        index = lyrics.find(search)  # Find the index of the searched word
+                        tuple_doc_and_index = ("{}, {}".format(doc, index),)
+                        if index != -1:  # Returns -1 when the search does not exist in the string
                             if tuple_doc_and_index not in count:
                                 count += ("{}, {}".format(doc, index),)
-                                if index >= 50:  # not sure if still necessary
+                                if index >= 50: 
                                     matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[index - 50: index + 50])),)
                                 elif index < 50:
                                     matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[0: index + 100])),)
@@ -187,9 +170,8 @@ def search():
     queryinput = ""
     themes = {}
 
-        #If query exists (i.e. is not None)
+    #If query exists (i.e. is not None)
     if query:
-        #Look at each entry in the example data
         results = tf_idf_search(tfv5, vocab, query)
 
         if results == None:
