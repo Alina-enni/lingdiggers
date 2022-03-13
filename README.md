@@ -8,6 +8,9 @@ With single word queries it looks for an occurrence anywhere within a word; e.g.
 With multi-word queries the engine searches only for the specific words in the query; e.g. 'fix you' shows results with 'fix' and 'you'.
 As we are using the tf-idf method, the results in both cases are ranked and presented in descending order.
 
+The web UI features Bootstrap and Jinja2 to ensure that the search interface looks nice to the user. When no search query exists, the user sees a 
+welcome message, and when no matches for the query are found, the user sees a special message.
+
 To use the search engine, 3 files are needed:
 - flaskdemo.py should be located in the flask folder
 - lyrics2.txt is the (small) lyrics database and should be located where the python file is.
