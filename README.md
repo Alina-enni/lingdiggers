@@ -8,4 +8,4 @@ As we are using the tf-idf method, the results in both cases are ranked and pres
 To use the search engine, 3 files are needed:
 - flaskdemo.py should be located in the flask folder
 - lyrics2.txt is the (small) lyrics database and should be located where the python file is.
-- index.html should be located in the template folder.
+- index.html located in the templates folder.
