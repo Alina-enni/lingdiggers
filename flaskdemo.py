@@ -89,22 +89,25 @@ def tf_idf_search(tfv5, vocab, query):
                         search = " " + search + " "
                         artist_and_song = working_doc.split("\n")  # split on newline to discern artist and song names
                         for i in artist_and_song:  # to remove empty strings (newlines at the beginning of original doc + probably in between verses)
-                            if re.match(r'^\s+$', i):
+                            if re.match(r'^[\s\r\n]*$', i):
                                 artist_and_song.remove(i)
                             else:
                                 continue
+                        if len(artist_and_song[0]) == 1 and artist_and_song[0][0] == ' ':
+                            artist_and_song.pop(0)
                         artistname = artist_and_song[0]
                         songname = artist_and_song[1].replace(" Lyrics", "")
-                        lyrics = ' '.join(artist_and_song[0:]).casefold()  # join actual lyrics back into one string
+                        video_code = artist_and_song[-1]
+                        lyrics = " " + ' '.join(artist_and_song[0:-2]).casefold()  # join actual lyrics back into one string
                         index = lyrics.find(search)  # find the index of searched word
                         tuple_doc_and_index = ("{}, {}".format(doc, index),)  # tuple of doc number and index of word
                         if index != -1:  # index returns -1 when the search does not exist in the string
                             if tuple_doc_and_index not in count:
                                 count += ("{}, {}".format(doc, index),)
                                 if index >= 50:  # not sure if still necessary
-                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[index - 50: index + 50])),)
+                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[index - 50: index + 50]), "{}".format(video_code)),)
                                 elif index < 50:
-                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[0: index + 100])),)
+                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[0: index + 100]), "{}".format(video_code)),)
                         else:
                             continue
                 return ranked_scores_and_doc_ids, hits, total_docs, matching_docs, queryinput, matches, themes
@@ -148,23 +151,25 @@ def tf_idf_search(tfv5, vocab, query):
                         search = " " + search + " "
                         artist_and_song = working_doc.split("\n")  # split on newline to discern artist and song names
                         for i in artist_and_song:  # to remove empty strings (newlines at the beginning of original doc + probably in between verses)
-                            if re.match(r'^\s+$', i):
+                            if re.match(r'^[\s\r\n]*$', i):
                                 artist_and_song.remove(i)
                             else:
                                 continue
-
+                        if len(artist_and_song[0]) == 1 and artist_and_song[0][0] == ' ':
+                            artist_and_song.pop(0)
                         artistname = artist_and_song[0]
                         songname = artist_and_song[1].replace(" Lyrics", "")
-                        lyrics = ' '.join(artist_and_song[0:]).casefold()  # join actual lyrics back into one string
+                        video_code = artist_and_song[-1]
+                        lyrics = " " + ' '.join(artist_and_song[0:-2]).casefold()  # join actual lyrics back into one string
                         index = lyrics.find(search)  # find the index of searched word
                         tuple_doc_and_index = ("{}, {}".format(doc, index),)  # tuple of doc number and index of word
                         if index != -1:  # index returns -1 when the search does not exist in the string
                             if tuple_doc_and_index not in count:
                                 count += ("{}, {}".format(doc, index),)
                                 if index >= 50:  # not sure if still necessary
-                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[index - 50: index + 50])),)
+                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[index - 50: index + 50]), "{}".format(video_code)),)
                                 elif index < 50:
-                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[0: index + 100])),)
+                                    matches += (("{} - {}".format(artistname, songname), "...{}...".format(lyrics[0: index + 100]), "{}".format(video_code)),)
                         else:
                             continue
                 return ranked_scores_and_doc_ids, hits, total_docs, matching_docs, queryinput, matches, themes
