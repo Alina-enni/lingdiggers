@@ -5,148 +5,210 @@
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-
         <!-- Bootstrap core CSS -->
         <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+
+    @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
     body {
         background-color: #f5f5f5;
         font-family: 'Arial';
         color: #2e2e2e;
     }
     h1 {
-        font-family: 'Georgia';
+        font-family: 'Nanum Pen Script';
         margin-bottom: 5vh;
+    }
+    h2 {
+        font-family: 'Nanum Pen Script';
+        margin-bottom: 3vh;
+        margin-top: 5vh;
     }
     .box {
         margin: 0px auto;
         text-align: center;
-        margin-top: 0;
-        margin-bottom: 0;
         box-sizing: border-box;
-        padding: 5vh;
-        min-height: 90vh;
+        min-height: 85vh;
+        padding: 7vh 0 0 0;
+    }
+    .intro {
+        width: 60%;
+        margin: 0 auto;
+        line-height: 35px;
+        font-family: 'Nanum Pen Script';
+        font-size: 26px;
+        text-align: center;
+        box-sizing: border-box;
+        margin-bottom: 5vh;
     }
     .footer {
         background-color: #283030;
         color: #b6bfbf;
         text-align: center;
         box-sizing: border-box;
+        width: 100%;
         height: 10vh;
         padding: 3vh;
         bottom: 0px;
+        margin-top: 5vh;
     }
     .footer a {
         color: #b6bfbf;
         text-decoration: none;
         font-weight: bold;
     }
-    table {
-        margin: 0px auto;
-        text-align: center;
-        }
-    td {
-        text-align: left; 
-        padding: 2vh;
-    }
     .results {
         margin-top: 2vh;
         width: 100%;
+        font-family: 'Share Tech Mono';
+        background-color: #fff;
+        box-sizing: border-box;
+        margin: 0px auto;
     }
     .results td {
-        padding: 2vh;
-        border: 1px solid #d6d6d6;
+        box-sizing: border-box;
+        padding: 3vh;
+        border: 1px solid #787878;
         background-color: #fff;
     }
     .title {
-        font-family: 'Georgia';
+        font-family: 'Nanum Pen Script';
         text-align: center;
-        font-weight: bold;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        padding: 1vw;
+        font-size: 30px;
     }
     h3 {
-        margin-top: 4vh;
-        margin-bottom: 3vh;
-        font-size: 18px;
-        font-family: 'Georgia';
+        font-size: 28px;
         font-weight: normal;
+        font-family: 'Nanum Pen Script';
+        margin-bottom: 0px;
+        margin-top: 7vh;
+    }
+    h4 {
+        font-size: 24px;
+        font-weight: normal;
+        font-family: 'Nanum Pen Script';
+        margin-top: 2vh;
     }
     .themes {
-        margin-bottom: 3vh;
+        font-family: 'Nanum Pen Script';
+        font-size: 26px;
+        margin: 0 auto;
+        width: 60%;
+        border-spacing: 3vh;
+        border-collapse: separate;
     }
     .themes td {
-        padding: 5px;
-        text-align: left;
+        text-align: center;
+        background-color: #dedede;
+        width: 20%;
+        padding: 1vh;
+        box-sizing: border-box;
+        border: 1px solid #787878;
+        border-radius: 28px 28px 28px 28px;
+    }
+    .matches {
+        font-family: 'Nanum Pen Script';
+        font-size: 26px;
+        margin: 0 auto;
+        margin-top: 0px;
+        margin-bottom: 5vh;
+        width: 80%;
+        text-align: center;
+    }
+    .matches td {
+        padding: 1vh;
+        box-sizing: border-box;
+    }
+    input[type=button], input[type=submit], input[type=reset] {
+        border: none;
+        border-radius: 28px 28px 28px 28px;
+        color: #283030;
+        padding: 2vh 3vh 2vh 3vh;
+        text-decoration: none;
+        cursor: pointer;
+        font-family: 'Nanum Pen Script';
+        font-size: 26px;
+        margin-left: 1vh;
+        transition: 0.3s;
+        border: 1px solid #787878;
+        background-color: #b8cefc;
+        }
+    input[type="submit"]:hover {
+        background-color: #283030;
+        color: #fff;
+        border: 1px solid #283030;
+    }
+    input[type=text] {
+        padding: 10px;
+        width: 20vw;
     }
     </style>
     </head>
     <body>
         <article>
-        <div class="container-fluid">
-        <div class="row">
-        <div class="box col-md-11">
+        <div class="container-fluid"><div class="row"><div class="box col-md-11">
 
-        <h1>Song lyric search</h1>
-        <!--Reload the page with variable "query" in the URL-->
-        <form>
-            <input type="text" name="query" autofocus>
-            <input type="submit" value="Search">
-        </form>
+        {% if queryinput|length > 0 %}
+            <form>
+                <input type="text" name="query" placeholder="Tell me what to look for" autofocus>
+                <input type="submit" value="Search">
+            </form>
 
-        <h3>The top 5 themes for this search are:</h3>
-        <table class="themes">
-            {% for key in themes %}
-            <tr>
-                    <td><strong>{{ themes[key] }}</strong>
-                    <td>{{ key }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+            {% if total_docs == 0 %}
+                <h3>Oh no, it looks like that lyric is not in my index.</h3>
+                <h4>Maybe you would like to try another search?</h4>
+            {% elif total_docs > 0 %}
+                    <h3>According to my calculations, the top 5 themes for this search are:</h3>
+                    <table class="themes">
+                    <tr>
+                    {% for key in themes %}
+                    <td>{{ themes[key] }}</td>
+                    {% endfor %}
+                    </tr>
+                    </table>
 
-        <table>
+                    <table class="matches">
+                    <!--Go through each item in the "matches" variable sent from
+                        search() function in the Flask app-->
+                    <tr><td>Looks like I found {{ total_docs }} matching documents.</td></tr>
+                    <tr><td>The matches are: {{ matching_docs }}</td></tr>
+                    <tr><td>I found these words: {{ queryinput }}</td></tr>
+                    </table>
 
-            <!--Go through each item in the "matches" variable sent from
-                search() function in the Flask app-->
-            <tr>
-                <td><strong>Total matching documents:</strong> {{ total_docs }}</td>
-                <td><strong>The matches are:</strong> {{ matching_docs }}</td>
-            </tr>
-            <tr>
-                <td><strong>The following words were found:</strong></td>
-                <td>{{ queryinput }}</td>
-            </tr>
-
-
-        </table>
-
-            <table class="results">
-            <tr>
-                <td class="title">Song</td>
-                <td class="title">Lyrics</td>
-                <td class="title">Video</td>
-            </tr>
-            {% for data, lyrics, video in matches %}
-            <tr>
-                <!--Display the name of the item based on the "name" key-->
-                    <td>{{ data }}</td>
-                    <td>{{ lyrics }}</td>
-                    <td>{{ video|safe }}</td>
-                <!--End for loop-->
-                {% endfor %}
-            </tr>
-            </table>
-
+                    <table class="results"><tr>
+                        <td class="title">Song</td>
+                        <td class="title">Lyrics</td>
+                    </tr>
+                    {% for data, lyrics in matches %}
+                    <tr>
+                            <td>{{ data }}</td>
+                            <td>{{ lyrics }}</td>
+                    {% endfor %}
+                    </tr>
+                    </table>
+            {% endif %}
+                
+        {% elif queryinput|length == 0 %}
+                <div class="intro">
+                <h2>Hello, human!</h2>
+                I am a search engine. My index consists of {{ nofdocs }} song lyrics from various artists. You can use me to find out in which songs a word or phrase occurs. I am still young and smol so please forgive me if I make a mistake!
+                </div> 
+            
+                <form>
+                    <input type="text" name="query" autofocus>
+                    <input type="submit" value="Search">
+                </form>
+        {% endif %}
         </div></div></div>
 
-        <div class="row">
-        <div class="footer col-md-12">
+        <div class="container-fluid"><div class="row"><div class="footer col-md-12">
             This search engine was created by the <a href="https://github.com/Alina-enni/lingdiggers" target="_blank">lingdiggers</a>
-        </div>
-        </div>
+        </div></div></div>
     
     </article>
     </body>
-
 </html>     
