@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.feature_extraction.text import CountVectorizer
 import numpy as np
 import re
 from operator import itemgetter
