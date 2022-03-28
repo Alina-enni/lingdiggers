@@ -182,11 +182,13 @@
                     <table class="results"><tr>
                         <td class="title">Song</td>
                         <td class="title">Lyrics</td>
+                        <td class="title">Video</td>
                     </tr>
-                    {% for data, lyrics in matches %}
+                    {% for data, lyrics, video in matches %}
                     <tr>
                             <td>{{ data }}</td>
                             <td>{{ lyrics }}</td>
+                            <td>{{ video|safe }}</td>
                     {% endfor %}
                     </tr>
                     </table>
