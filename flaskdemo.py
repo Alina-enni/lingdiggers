@@ -8,7 +8,7 @@ import pke
 #Initialize Flask instance
 app = Flask(__name__)
 
-f = open("YOUR_FILEPATH/lyrics2.txt")       # Use accurate file path to open your song lyric index (.txt file)
+f = open("lyrics2.txt")       # Use accurate file path to open your song lyric index (.txt file)
 op = f.read()
 f.close()
 documents = op.split(r'<|endoftext|>')
