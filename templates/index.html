@@ -161,7 +161,7 @@
             {% if total_docs == 0 %}
                 <h3>Oh no, it looks like that lyric is not in my index.</h3>
                 <h4>Maybe you would like to try another search?</h4>
-            {% elif total_docs > 0 %}
+            {% elif total_docs != 0 %}
                     <h3>According to my calculations, the top 5 themes for this search are:</h3>
                     <table class="themes">
                     <tr>
